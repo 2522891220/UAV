@@ -17,7 +17,7 @@ ub = [ub UAV.limt.v(:,1)' ];
 lb = [lb UAV.limt.v(:,2)' ];
 
 
-dim = flight_num(i)*3*UAVnum+3;
+dim = flight_num(i)*3*UAVnum+4;
 
 
 

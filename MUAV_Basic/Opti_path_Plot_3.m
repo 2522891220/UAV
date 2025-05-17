@@ -42,9 +42,9 @@ for ii=1:track_num
     a.V = v(1, :)';    % 该个体的速度 转置成[UAVnum 1]
     %     P_a = P(1, :);     % 该个体的航迹点矩阵
     a.P = cell(UAVnum, 1);  % a.P含有UAVnum个元胞 用来保存每个UAV的航迹点坐标值，行为xyz 列为航迹点
-    now_x = x_all(track_num*(ii-1)+1:track_num*(ii-1)+3,:);
-    now_y = y_all(track_num*(ii-1)+1:track_num*(ii-1)+3,:);
-    now_z = z_all(track_num*(ii-1)+1:track_num*(ii-1)+3,:);
+    now_x = x_all(track_num*(ii-1)+1:track_num*(ii-1)+4,:);
+    now_y = y_all(track_num*(ii-1)+1:track_num*(ii-1)+4,:);
+    now_z = z_all(track_num*(ii-1)+1:track_num*(ii-1)+4,:);
     for i =1:UAVnum
         P_ai=[now_x(i,:); now_y(i,:); now_z(i,:)];% 这个UAV的轨迹
         % 真实高度
@@ -129,7 +129,14 @@ for j=1:track_num
         [UAV.Start(ii,2) Y((j-1)*UAVnum+ii,:) UAV.Goal(ii,2)],...
         [ UAV.Start(ii,3) Z((j-1)*UAVnum+ii,:) UAV.Goal(ii,3)], 'Color', colors{7}, 'LineWidth', 2);hold on   % 修改这里
     hold on
-    %     legend([h1,h2,h3],{'UAV-1','UAV-2','UAV-3'})
+
+
+    ii=4;
+    h44 = plot3([UAV.Start(ii,1) X((j-1)*UAVnum+ii,:) UAV.Goal(ii,1)],...
+        [UAV.Start(ii,2) Y((j-1)*UAVnum+ii,:) UAV.Goal(ii,2)],...
+        [ UAV.Start(ii,3) Z((j-1)*UAVnum+ii,:) UAV.Goal(ii,3)], 'Color', colors{5}, 'LineWidth', 2);hold on   % 修改颜色为 colors{5}
+    hold on
+
 
     subtitle(Curve_name(j),'FontSize',12,'FontName','Times New Roman')
 
@@ -147,7 +154,7 @@ for j=1:track_num
     xlabel('x [m]','FontSize',12,'FontName','Times New Roman');
     ylabel('y [m]','FontSize',12,'FontName','Times New Roman');
     zlabel('z [m]','FontSize',12,'FontName','Times New Roman');
-    zlim([0,max(max(Z))+50])
+    zlim([0,max(max(Z))+100])
     hold on
 
     %% 修改视角 不同的视角可以从这里修改 俯视图view(0,90) 侧视图view(-90,0) 正视图view(0,0)
@@ -227,10 +234,15 @@ for j=1:track_num
     scatter3(UAV.Goal(2,1),UAV.Goal(2,2),UAV.Goal(2,3),100,'kp','MarkerFaceColor','y');
     scatter3(UAV.Start(3,1),UAV.Start(3,2),UAV.Start(3,3),100,'bs','MarkerFaceColor','y');
     scatter3(UAV.Goal(3,1),UAV.Goal(3,2),UAV.Goal(3,3),100,'kp','MarkerFaceColor','y');
+    % 调试：检查UAV4终点坐标
+fprintf('UAV4终点坐标: (%.2f, %.2f, %.2f)\n', UAV.Goal(4,1), UAV.Goal(4,2), UAV.Goal(4,3));
+fprintf('当前视图范围: zlim = [%.2f, %.2f]\n', 0, max(max(Z))+50);
+    scatter3(UAV.Start(4,1),UAV.Start(4,2),UAV.Start(4,3),100,'bs','MarkerFaceColor','y');
+    scatter3(UAV.Goal(4,1),UAV.Goal(4,2),UAV.Goal(4,3),100,'kp','MarkerFaceColor','y');
     if j==3
-        legend([p1,p2,h11,h22,h33],{'Start','End','UAV-1','UAV-2','UAV-3'},'FontSize',12,'FontName','Times New Roman')  ;      hold on
+        legend([p1,p2,h11,h22,h33,h44],{'Start','End','UAV-1','UAV-2','UAV-3','UAV-4'},'FontSize',12,'FontName','Times New Roman')  ;      hold on
     end
-    clear h11 h22 h33
+    clear h11 h22 h33 h44
 end
 % title('Multi-UAV Path Planning','FontSize',12,'FontName','Times New Roman')
 

@@ -4,27 +4,41 @@ function [F] = CostFunction(Pos1, UAV)
 Pos = SphericalToCart(Pos1,UAV);
 
 % Input solution
-x=Pos.x;
-y=Pos.y;
-z=Pos.z;
+x = Pos.x;
+y = Pos.y;
+z = Pos.z;
 
 % Start location
-xs=UAV.Start(:,1);  % UAV.num 无人机数 UAVnum*1
-ys=UAV.Start(:,2);
-zs=UAV.Start(:,3);
+xs = UAV.Start(:,1);
+ys = UAV.Start(:,2);
+zs = UAV.Start(:,3);
 
 % Final location
-xf=UAV.Goal(:,1);
-yf=UAV.Goal(:,2);
-zf=UAV.Goal(:,3);
+xf = UAV.Goal(:,1);
+yf = UAV.Goal(:,2);
+zf = UAV.Goal(:,3);
 
 % 完整路径包含了起点和终点
-% x_all = [xs x xf];
-% y_all = [ys y yf];
-% z_all = [zs z zf];
 x_all = [ x ];
 y_all = [ y ];
 z_all = [ z ];
+
+% 更新动态目标位置
+for i = 1:UAV.num
+    if UAV.dynamic_targets(i)
+        % 计算预计截获时间
+        dist = norm([x_all(i,end) - xs(i), y_all(i,end) - ys(i), z_all(i,end) - zs(i)]);
+        intercept_time = dist / UAV.limt.v(i,2); % 使用最大速度估算
+        
+        % 更新目标位置
+        new_pos = UAV.Goal(i,:) + UAV.target_velocity * intercept_time * UAV.movement_direction;
+        
+        % 更新终点位置
+        xf(i) = new_pos(1);
+        yf(i) = new_pos(2);
+        zf(i) = new_pos(3);
+    end
+end
 
 
 %% 编码转换
